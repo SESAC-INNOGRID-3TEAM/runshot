@@ -1,0 +1,8 @@
+pika
+sqlalchemy
+pymysql
+pytesseract
+pillow
+minio
+python-dotenv
+python-json-logger
