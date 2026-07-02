@@ -103,6 +103,9 @@ def _on_message(channel, method, _properties, body):
         channel.basic_ack(delivery_tag=method.delivery_tag)
 
 
+_OCR_QUEUE_TTL_MS = 24 * 60 * 60 * 1000  # docs/SYSTEM_ARCHITECTURE.md §9: ocr_queue TTL 24시간
+
+
 def main() -> None:
     queue_name = os.environ.get("RABBITMQ_OCR_QUEUE", "ocr_queue")
     credentials = pika.PlainCredentials(
@@ -116,7 +119,9 @@ def main() -> None:
 
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
-    channel.queue_declare(queue=queue_name, durable=True)
+    channel.queue_declare(
+        queue=queue_name, durable=True, arguments={"x-message-ttl": _OCR_QUEUE_TTL_MS}
+    )
     channel.basic_qos(prefetch_count=1)
     channel.basic_consume(queue=queue_name, on_message_callback=_on_message)
 
