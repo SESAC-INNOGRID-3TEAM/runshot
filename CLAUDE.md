@@ -18,6 +18,10 @@
 - backend/ : Flask API   worker/ : OCR 워커   frontend/ : React
 각 폴더의 CLAUDE.md에 세부 규칙이 있다.
 
+## 버그 픽스 작업 시
+- 반드시 [docs/BUGFIX_AGENT_GUIDE.md](docs/BUGFIX_AGENT_GUIDE.md)를 먼저 읽는다.
+  (근본원인·최소변경 원칙, FE↔BE·BE↔워커·모델↔마이그레이션 계약, 알려진 함정, 완료 정의)
+
 ## 공통 규칙
 - 에러 응답은 항상 {"error": "메시지"} 형식(JSON).
 - 시간은 UTC 기준, ISO 8601 문자열로 주고받는다.
