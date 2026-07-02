@@ -1,1 +1,6 @@
-# TODO: create_app()으로 Flask 앱 생성 후 실행하는 진입점
+from app import create_app
+
+app = create_app()
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
