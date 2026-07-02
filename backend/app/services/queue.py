@@ -8,6 +8,10 @@ import json
 import pika
 from flask import current_app
 
+# ocr_queue TTL 24시간 (SYSTEM_ARCHITECTURE §9). 워커의 queue_declare 인자와 일치해야
+# PRECONDITION_FAILED 없이 선언된다.
+_OCR_QUEUE_TTL_MS = 24 * 60 * 60 * 1000
+
 
 def _connect():
     params = pika.ConnectionParameters(
@@ -29,7 +33,9 @@ def publish_ocr_job(message: dict):
     conn = _connect()
     try:
         channel = conn.channel()
-        channel.queue_declare(queue=queue, durable=True)
+        channel.queue_declare(
+            queue=queue, durable=True, arguments={"x-message-ttl": _OCR_QUEUE_TTL_MS}
+        )
         channel.basic_publish(
             exchange="",
             routing_key=queue,

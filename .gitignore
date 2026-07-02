@@ -15,3 +15,7 @@ __pycache__/
 
 # Local tooling
 .claude/
+
+# 로컬 단일 머신 실행용 override (커밋 금지)
+docker-compose.local.yml
+frontend/vite.local.config.js
