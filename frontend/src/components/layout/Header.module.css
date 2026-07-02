@@ -1,0 +1,64 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 var(--rs-space-6);
+  background: var(--rs-bg);
+  border-bottom: 1px solid var(--rs-border);
+}
+
+.logo {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--rs-text);
+  transition: color var(--rs-duration-fast) var(--rs-ease-out);
+}
+
+.logo:hover {
+  color: var(--rs-accent);
+}
+
+.mockBadge {
+  padding: 2px var(--rs-space-2);
+  border: 1px solid var(--rs-danger);
+  color: var(--rs-danger);
+  border-radius: var(--rs-radius-sm);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--rs-space-5);
+}
+
+.navLink {
+  padding-bottom: 2px;
+  font-size: 0.9rem;
+  color: var(--rs-text-muted);
+  border-bottom: 2px solid transparent;
+  transition: color var(--rs-duration-fast) var(--rs-ease-out),
+    border-bottom-color var(--rs-duration-base) var(--rs-ease-out);
+}
+
+.navLink:hover {
+  color: var(--rs-text);
+}
+
+.navLinkActive {
+  color: var(--rs-text);
+  border-bottom-color: var(--rs-accent);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--rs-space-3);
+}

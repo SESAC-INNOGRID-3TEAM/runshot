@@ -1,0 +1,94 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.9);
+  animation: rs-fade-in var(--rs-duration-base) var(--rs-ease-out);
+}
+
+.closeButton {
+  position: absolute;
+  top: var(--rs-space-5);
+  right: var(--rs-space-5);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--rs-radius-pill);
+  border: 1px solid var(--rs-border);
+  background: var(--rs-bg-card);
+  color: var(--rs-text);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: transform var(--rs-duration-fast) var(--rs-ease-out), border-color var(--rs-duration-fast) var(--rs-ease-out);
+}
+
+.closeButton:hover {
+  border-color: var(--rs-accent);
+  transform: rotate(90deg);
+}
+
+.navButton {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--rs-radius-pill);
+  border: 1px solid var(--rs-border);
+  background: var(--rs-bg-card);
+  color: var(--rs-text);
+  font-size: 1.3rem;
+  cursor: pointer;
+  margin: 0 var(--rs-space-4);
+  transition: transform var(--rs-duration-fast) var(--rs-ease-out), border-color var(--rs-duration-fast) var(--rs-ease-out);
+}
+
+.navButton:hover:not(:disabled) {
+  border-color: var(--rs-accent);
+  color: var(--rs-accent);
+  transform: scale(1.08);
+}
+
+.navButton:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.imageWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: min(90vw, 900px);
+  animation: rs-scale-in var(--rs-duration-base) var(--rs-ease-out);
+}
+
+.image {
+  max-width: 100%;
+  max-height: 75vh;
+  object-fit: contain;
+  border-radius: var(--rs-radius-md);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--rs-space-4);
+  margin-top: var(--rs-space-4);
+  color: var(--rs-text-muted);
+  font-size: 0.85rem;
+}
+
+.downloadButton {
+  padding: var(--rs-space-2) var(--rs-space-4);
+  background: var(--rs-accent);
+  color: var(--rs-accent-text);
+  border-radius: var(--rs-radius-pill);
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: transform var(--rs-duration-fast) var(--rs-ease-out), box-shadow var(--rs-duration-fast) var(--rs-ease-out);
+}
+
+.downloadButton:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--rs-shadow-accent);
+}

@@ -1,0 +1,49 @@
+:root {
+  /* 배경 */
+  --rs-bg: #0a0a08;
+  --rs-bg-elevated: #131310;
+  --rs-bg-card: #1c1c17;
+  --rs-border: rgba(255, 255, 255, 0.08);
+
+  /* 텍스트 */
+  --rs-text: #f5f5f0;
+  --rs-text-muted: #a3a396;
+
+  /* 포인트 컬러(라임그린) */
+  --rs-accent: #d4ff3d;
+  --rs-accent-hover: #c2eb2e;
+  --rs-accent-text: #0a0a08;
+
+  /* 상태 */
+  --rs-danger: #ff5d5d;
+  --rs-success: #4ade80;
+
+  /* 폰트 */
+  --rs-font-sans: "Pretendard Variable", -apple-system, "Segoe UI", "Malgun Gothic",
+    "Apple SD Gothic Neo", system-ui, sans-serif;
+
+  /* 여백 스케일 */
+  --rs-space-1: 4px;
+  --rs-space-2: 8px;
+  --rs-space-3: 12px;
+  --rs-space-4: 16px;
+  --rs-space-5: 24px;
+  --rs-space-6: 32px;
+  --rs-space-7: 48px;
+  --rs-space-8: 64px;
+
+  /* 모양 */
+  --rs-radius-sm: 6px;
+  --rs-radius-md: 10px;
+  --rs-radius-pill: 999px;
+
+  /* 레이아웃 */
+  --rs-container-max: 1280px;
+
+  /* 모션 */
+  --rs-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --rs-duration-fast: 150ms;
+  --rs-duration-base: 280ms;
+  --rs-shadow-accent: 0 12px 28px -10px rgba(212, 255, 61, 0.35);
+  --rs-shadow-lift: 0 16px 32px -12px rgba(0, 0, 0, 0.5);
+}

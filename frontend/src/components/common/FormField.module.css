@@ -1,0 +1,46 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rs-space-2);
+  margin-bottom: var(--rs-space-4);
+}
+
+.label {
+  font-size: 0.85rem;
+  color: var(--rs-text-muted);
+}
+
+.input,
+.textarea {
+  height: 44px;
+  padding: 0 var(--rs-space-4);
+  background: var(--rs-bg-card);
+  border: 1px solid var(--rs-border);
+  border-radius: var(--rs-radius-sm);
+  color: var(--rs-text);
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.textarea {
+  height: auto;
+  min-height: 100px;
+  padding: var(--rs-space-3) var(--rs-space-4);
+  resize: vertical;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--rs-text-muted);
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--rs-accent);
+}
+
+.error {
+  color: var(--rs-danger);
+  font-size: 0.8rem;
+}

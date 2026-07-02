@@ -1,0 +1,15 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1;
+}
+
+.container {
+  max-width: var(--rs-container-max);
+  margin: 0 auto;
+  padding: 0 var(--rs-space-6);
+}

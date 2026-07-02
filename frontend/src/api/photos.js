@@ -1,0 +1,36 @@
+import apiClient from "./client";
+import { USE_MOCK } from "./useMock";
+import { MOCK_PHOTOS_BY_EVENT, MOCK_UNRECOGNIZED_BY_EVENT, delay } from "./mockData";
+
+export async function searchPhotos(eventId, bib) {
+  if (USE_MOCK) {
+    await delay();
+    const photos = MOCK_PHOTOS_BY_EVENT[Number(eventId)] ?? [];
+    return photos.filter((p) => String(p.bib_number) === String(bib));
+  }
+  const res = await apiClient.get(`/events/${eventId}/search`, { params: { bib } });
+  return res.data;
+}
+
+export async function fetchUnrecognizedPhotos(eventId) {
+  if (USE_MOCK) {
+    await delay();
+    return MOCK_UNRECOGNIZED_BY_EVENT[Number(eventId)] ?? [];
+  }
+  const res = await apiClient.get(`/events/${eventId}/photos/unrecognized`);
+  return res.data;
+}
+
+export async function addManualTag(eventId, photoId, bibNumber) {
+  if (USE_MOCK) {
+    await delay();
+    const list = MOCK_UNRECOGNIZED_BY_EVENT[Number(eventId)] ?? [];
+    const idx = list.findIndex((p) => p.id === photoId);
+    if (idx >= 0) list.splice(idx, 1);
+    return { ok: true, bib_number: bibNumber };
+  }
+  const res = await apiClient.post(`/events/${eventId}/photos/${photoId}/tags`, {
+    bib_number: bibNumber,
+  });
+  return res.data;
+}
