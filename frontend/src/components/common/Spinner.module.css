@@ -1,0 +1,18 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rs-space-3);
+  padding: var(--rs-space-6) 0;
+  color: var(--rs-text-muted);
+  font-size: 0.9rem;
+}
+
+.ring {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--rs-border);
+  border-top-color: var(--rs-accent);
+  animation: rs-spin 0.7s linear infinite;
+}

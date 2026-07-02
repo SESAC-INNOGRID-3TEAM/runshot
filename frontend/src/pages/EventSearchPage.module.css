@@ -1,0 +1,140 @@
+.wrapper {
+  max-width: var(--rs-container-max);
+  margin: 0 auto;
+  padding: var(--rs-space-7) var(--rs-space-6) var(--rs-space-8);
+}
+
+.headRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--rs-space-4);
+  margin-bottom: var(--rs-space-3);
+}
+
+.bibLabel {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--rs-text-muted);
+}
+
+.bibValue {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--rs-accent);
+  margin-left: var(--rs-space-2);
+}
+
+.resultCount {
+  color: var(--rs-text-muted);
+  margin: var(--rs-space-1) 0 0;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--rs-space-3);
+}
+
+.sortSelect {
+  height: 40px;
+  padding: 0 var(--rs-space-3);
+  background: var(--rs-bg-card);
+  border: 1px solid var(--rs-border);
+  border-radius: var(--rs-radius-sm);
+  color: var(--rs-text);
+  font-size: 0.85rem;
+}
+
+.saveAllButton {
+  height: 40px;
+  padding: 0 var(--rs-space-4);
+  background: var(--rs-accent);
+  color: var(--rs-accent-text);
+  border: none;
+  border-radius: var(--rs-radius-pill);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform var(--rs-duration-fast) var(--rs-ease-out),
+    box-shadow var(--rs-duration-fast) var(--rs-ease-out);
+}
+
+.saveAllButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--rs-shadow-accent);
+}
+
+.saveAllButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.filterRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--rs-space-2);
+  padding: var(--rs-space-4) 0;
+  margin-bottom: var(--rs-space-5);
+  border-bottom: 1px solid var(--rs-border);
+}
+
+.filterLabel {
+  color: var(--rs-text-muted);
+  font-size: 0.8rem;
+  margin-right: var(--rs-space-1);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rs-space-1);
+  padding: var(--rs-space-1) var(--rs-space-3);
+  border-radius: var(--rs-radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  transition: transform var(--rs-duration-fast) var(--rs-ease-out), border-color var(--rs-duration-fast) var(--rs-ease-out);
+}
+
+.chipActive {
+  background: var(--rs-accent);
+  color: var(--rs-accent-text);
+}
+
+.chipOutline {
+  background: transparent;
+  border: 1px solid var(--rs-border);
+  color: var(--rs-text-muted);
+}
+
+.chipOutline:hover {
+  border-color: var(--rs-accent);
+  color: var(--rs-accent);
+  transform: translateY(-1px);
+}
+
+.chipRemove {
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.clearAll {
+  margin-left: var(--rs-space-2);
+  color: var(--rs-text-muted);
+  font-size: 0.8rem;
+  text-decoration: underline;
+}
+
+.stateText {
+  color: var(--rs-text-muted);
+  text-align: center;
+  padding: var(--rs-space-7) 0;
+}

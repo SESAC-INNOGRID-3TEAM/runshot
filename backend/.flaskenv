@@ -1,1 +1,2 @@
-# TODO: FLASK_APP, FLASK_ENV 등 flask CLI용 환경변수
+FLASK_APP=run.py
+FLASK_DEBUG=1

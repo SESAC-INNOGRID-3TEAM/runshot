@@ -10,3 +10,4 @@ marshmallow
 minio
 pika
 redis
+gunicorn
