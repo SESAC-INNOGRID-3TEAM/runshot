@@ -1,0 +1,16 @@
+# 실서버(Server A) 배포용 오버라이드 파일.
+# 로컬 개발은 docker-compose.app.yml만 사용(소스 빌드), 배포는 두 파일을 합쳐서 사용:
+#   docker compose -f docker-compose.app.yml -f docker-compose.app.prod.yml pull
+#   docker compose -f docker-compose.app.yml -f docker-compose.app.prod.yml up -d
+# build: 대신 image:만 지정 -> Docker Hub에서 받은 이미지로 실행(서버에 소스코드 불필요).
+# :latest 대신 버전 태그(:v1 등)를 쓰면 특정 버전으로 고정/롤백하기 쉬움.
+
+services:
+  nginx:
+    image: wonju90/runshot-frontend:latest
+
+  api:
+    image: wonju90/runshot-api:latest
+
+  worker:
+    image: wonju90/runshot-worker:latest
