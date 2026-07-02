@@ -15,3 +15,6 @@ __pycache__/
 
 # Local tooling
 .claude/
+
+# 로컬 OCR 테스트용 샘플 사진 (사람 얼굴 등 개인정보 포함 가능 - 커밋 금지)
+worker/tests/sample_photos/
