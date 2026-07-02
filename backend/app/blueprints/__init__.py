@@ -1,1 +1,1 @@
-# TODO: 블루프린트 등록 헬퍼 (auth, events, photos, admin — 전부 url_prefix="/api")
+"""블루프린트 패키지. 각 모듈이 *_bp 를 정의하고 create_app에서 등록한다."""
