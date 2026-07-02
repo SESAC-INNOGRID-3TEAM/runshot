@@ -73,7 +73,7 @@ def complete(event_id):
     if not isinstance(files, list) or not files:
         return error("files 목록이 필요합니다.")
 
-    photo_ids = []
+    photos = []
     for f in files:
         storage_key = f.get("storage_key")
         if not storage_key:
@@ -87,8 +87,10 @@ def complete(event_id):
             ocr_status="pending",
         )
         db.session.add(photo)
-        photo_ids.append(photo.id)
+        photos.append(photo)
     db.session.commit()
+    # id는 파이썬 쪽 default(uuid4)가 flush 시점에 생성됨 -> commit 이후에 읽어야 실제 값이 채워짐
+    photo_ids = [photo.id for photo in photos]
 
     # OCR 작업 발행. RabbitMQ 장애 시에도 업로드 자체는 성공 처리(사진은 pending 유지).
     for pid, f in zip(photo_ids, files):
