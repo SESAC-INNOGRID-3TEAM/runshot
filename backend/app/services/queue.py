@@ -23,13 +23,20 @@ def _connect():
     return pika.BlockingConnection(params)
 
 
+_OCR_QUEUE_TTL_MS = 24 * 60 * 60 * 1000  # docs/SYSTEM_ARCHITECTURE.md §9: ocr_queue TTL 24시간
+# worker/main.py의 queue_declare와 반드시 동일한 arguments여야 함
+# (RabbitMQ는 큐 생성 시 인자가 고정되며, 다른 인자로 재선언하면 406 에러로 거부됨)
+
+
 def publish_ocr_job(message: dict):
     """ocr_queue에 OCR 작업 메시지 발행. durable 큐, persistent 메시지."""
     queue = current_app.config["RABBITMQ_OCR_QUEUE"]
     conn = _connect()
     try:
         channel = conn.channel()
-        channel.queue_declare(queue=queue, durable=True)
+        channel.queue_declare(
+            queue=queue, durable=True, arguments={"x-message-ttl": _OCR_QUEUE_TTL_MS}
+        )
         channel.basic_publish(
             exchange="",
             routing_key=queue,
