@@ -73,37 +73,41 @@ def complete(event_id):
     if not isinstance(files, list) or not files:
         return error("files 목록이 필요합니다.")
 
-    photo_ids = []
+    photos = []
     for f in files:
         storage_key = f.get("storage_key")
         if not storage_key:
             continue
-        photo = Photo(
-            event_id=event_id,
-            uploader_id=g.user.id,
-            storage_key=storage_key,
-            original_filename=f.get("filename", ""),
-            file_size=f.get("file_size", 0),
-            ocr_status="pending",
+        photos.append(
+            Photo(
+                event_id=event_id,
+                uploader_id=g.user.id,
+                storage_key=storage_key,
+                original_filename=f.get("filename", ""),
+                file_size=f.get("file_size", 0),
+                ocr_status="pending",
+            )
         )
-        db.session.add(photo)
-        photo_ids.append(photo.id)
+    db.session.add_all(photos)
+    db.session.flush()  # id 채번(커밋 전에 확보 → 커밋 후 만료 재조회 방지)
+    jobs = [{"photo_id": p.id, "storage_key": p.storage_key} for p in photos]
     db.session.commit()
+    photo_ids = [j["photo_id"] for j in jobs]
 
     # OCR 작업 발행. RabbitMQ 장애 시에도 업로드 자체는 성공 처리(사진은 pending 유지).
-    for pid, f in zip(photo_ids, files):
+    for job in jobs:
         try:
             publish_ocr_job(
                 {
-                    "photo_id": pid,
-                    "storage_key": f.get("storage_key"),
+                    "photo_id": job["photo_id"],
+                    "storage_key": job["storage_key"],
                     "event_id": event_id,
                     "retry_count": 0,
                     "enqueued_at": datetime.now(timezone.utc).isoformat(),
                 }
             )
         except Exception:
-            current_app.logger.exception("OCR 작업 발행 실패 photo_id=%s", pid)
+            current_app.logger.exception("OCR 작업 발행 실패 photo_id=%s", job["photo_id"])
 
     return {"processed": len(photo_ids), "photo_ids": photo_ids}
 

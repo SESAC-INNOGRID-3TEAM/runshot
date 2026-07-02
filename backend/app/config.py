@@ -38,6 +38,7 @@ class Config:
     MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY", "minioadmin")
     MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY", "minioadmin")
     MINIO_SECURE = os.getenv("MINIO_SECURE", "false").lower() == "true"
+    MINIO_REGION = os.getenv("MINIO_REGION", "us-east-1")
     MINIO_BUCKET_RAW = os.getenv("MINIO_BUCKET_RAW", "runshot-raw")
     MINIO_BUCKET_DERIVED = os.getenv("MINIO_BUCKET_DERIVED", "runshot-derived")
     PRESIGNED_PUT_EXPIRY = _int("MINIO_PRESIGNED_EXPIRY", 900)  # 15분
