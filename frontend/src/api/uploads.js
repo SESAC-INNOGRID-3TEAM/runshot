@@ -12,14 +12,18 @@ export async function requestPresignedUploads(eventId, files) {
       storage_key: `raw/events/${eventId}/mock-${i}-${file.name}`,
     }));
   }
-  const res = await apiClient.post(`/events/${eventId}/photos/presign`, {
+  const res = await apiClient.post(`/events/${eventId}/upload/presigned`, {
     files: files.map((file) => ({
       filename: file.name,
-      size: file.size,
       content_type: file.type,
+      file_size: file.size,
     })),
   });
-  return res.data;
+  // 백엔드: { files:[{presigned_url, storage_key}] } → 업로드 로직이 쓰는 upload_url로 매핑
+  return res.data.files.map((f) => ({
+    upload_url: f.presigned_url,
+    storage_key: f.storage_key,
+  }));
 }
 
 export async function putToPresignedUrl(uploadUrl, file, onProgress) {
@@ -44,6 +48,13 @@ export async function completeUploads(eventId, photos) {
     await delay(300);
     return { completed: photos.length };
   }
-  const res = await apiClient.post(`/events/${eventId}/photos/complete`, { photos });
-  return res.data;
+  const res = await apiClient.post(`/events/${eventId}/upload/complete`, {
+    files: photos.map((p) => ({
+      storage_key: p.storage_key,
+      filename: p.original_filename,
+      file_size: p.file_size,
+    })),
+  });
+  // 백엔드: { processed, photo_ids } → 호출부가 쓰는 completed로 매핑
+  return { completed: res.data.processed };
 }

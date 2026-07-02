@@ -8,8 +8,17 @@ export async function searchPhotos(eventId, bib) {
     const photos = MOCK_PHOTOS_BY_EVENT[Number(eventId)] ?? [];
     return photos.filter((p) => String(p.bib_number) === String(bib));
   }
-  const res = await apiClient.get(`/events/${eventId}/search`, { params: { bib } });
-  return res.data;
+  const res = await apiClient.get(`/events/${eventId}/photos/search`, { params: { bib } });
+  // 백엔드: { bib_number, total, photos:[{photo_id, thumbnail_url, original_url, shot_at, confidence}] }
+  // → 컴포넌트가 쓰는 { id, thumbnail_url, image_url, shot_at } 형태로 매핑
+  return res.data.photos.map((p) => ({
+    id: p.photo_id,
+    bib_number: res.data.bib_number,
+    shot_at: p.shot_at,
+    thumbnail_url: p.thumbnail_url,
+    image_url: p.original_url,
+    confidence: p.confidence,
+  }));
 }
 
 export async function fetchUnrecognizedPhotos(eventId) {
@@ -18,7 +27,7 @@ export async function fetchUnrecognizedPhotos(eventId) {
     return MOCK_UNRECOGNIZED_BY_EVENT[Number(eventId)] ?? [];
   }
   const res = await apiClient.get(`/events/${eventId}/photos/unrecognized`);
-  return res.data;
+  return res.data.photos;
 }
 
 export async function addManualTag(eventId, photoId, bibNumber) {

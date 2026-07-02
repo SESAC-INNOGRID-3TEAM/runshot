@@ -8,7 +8,7 @@ export async function fetchUsers() {
     return MOCK_USERS;
   }
   const res = await apiClient.get("/admin/users");
-  return res.data;
+  return res.data.users;
 }
 
 export async function updateUserRole(userId, role) {
@@ -18,7 +18,7 @@ export async function updateUserRole(userId, role) {
     if (user) user.role = role;
     return user;
   }
-  const res = await apiClient.patch(`/admin/users/${userId}`, { role });
+  const res = await apiClient.patch(`/admin/users/${userId}/role`, { role });
   return res.data;
 }
 

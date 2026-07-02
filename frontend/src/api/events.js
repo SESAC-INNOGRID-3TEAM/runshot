@@ -8,7 +8,7 @@ export async function fetchEvents() {
     return MOCK_EVENTS;
   }
   const res = await apiClient.get("/events");
-  return res.data;
+  return res.data.events;
 }
 
 export async function fetchEvent(id) {
@@ -19,7 +19,9 @@ export async function fetchEvent(id) {
     return event;
   }
   const res = await apiClient.get(`/events/${id}`);
-  return res.data;
+  // 백엔드는 상태 요약을 summary로 반환 → 컴포넌트가 쓰는 photo_summary로 매핑
+  const { summary, ...event } = res.data;
+  return { ...event, photo_summary: summary };
 }
 
 export async function createEvent(payload) {
