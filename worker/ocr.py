@@ -10,7 +10,7 @@ _BIB_MIN_DIGITS = int(os.environ.get("BIB_MIN_DIGITS", 2))
 _BIB_MAX_DIGITS = int(os.environ.get("BIB_MAX_DIGITS", 5))
 _MIN_CONFIDENCE = float(os.environ.get("OCR_MIN_CONFIDENCE", 0.6))
 _MAX_DIMENSION = 1600
-_MAX_DETECTION_BOXES = 15
+_MAX_DETECTION_BOXES = 8
 _CROP_PADDING_RATIO = 0.12
 _CROP_UPSCALE_FACTOR = 3.0
 _CROP_MAX_HEIGHT = 900
@@ -87,9 +87,14 @@ def _crop_region(image: Image.Image, box: tuple[int, int, int, int], scale: floa
     crop = image.crop(crop_box)
     if crop.height == 0:
         return crop
-    upscale = max(1.0, min(_CROP_UPSCALE_FACTOR, _CROP_MAX_HEIGHT / crop.height))
-    if upscale > 1.0:
-        crop = crop.resize((int(crop.width * upscale), int(crop.height * upscale)), Image.LANCZOS)
+    # 작은 영역은 최대 _CROP_UPSCALE_FACTOR배까지 확대하되, 큰 사진(예: 스마트폰 원본)에서
+    # 잘라낸 영역은 이미 커서 그 배율을 그대로 곱하면 지나치게 커짐 — _CROP_MAX_HEIGHT를
+    # 넘지 않도록 필요하면 배율을 줄이거나(경우에 따라 축소까지) 캡을 씌운다.
+    scale = _CROP_UPSCALE_FACTOR
+    if crop.height * scale > _CROP_MAX_HEIGHT:
+        scale = _CROP_MAX_HEIGHT / crop.height
+    if abs(scale - 1.0) > 0.01:
+        crop = crop.resize((max(1, int(crop.width * scale)), max(1, int(crop.height * scale))), Image.LANCZOS)
     return crop
 
 
