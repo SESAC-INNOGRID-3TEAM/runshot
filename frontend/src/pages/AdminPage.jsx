@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { fetchUsers, updateUserRole, deleteEvent } from "../api/admin";
 import { fetchEvents } from "../api/events";
@@ -113,6 +114,7 @@ export default function AdminPage() {
                 <th>날짜</th>
                 <th>장소</th>
                 <th></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -121,6 +123,11 @@ export default function AdminPage() {
                   <td>{event.name}</td>
                   <td>{formatEventDate(event.event_date)}</td>
                   <td>{event.location}</td>
+                  <td>
+                    <Link className={styles.manageLink} to={`/admin/events/${event.id}/photos`}>
+                      사진 관리
+                    </Link>
+                  </td>
                   <td>
                     <button className={styles.deleteButton} onClick={() => handleDeleteEvent(event.id)}>
                       삭제

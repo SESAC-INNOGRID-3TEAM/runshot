@@ -11,6 +11,7 @@ import EventUploadPage from "./pages/EventUploadPage";
 import EventNewPage from "./pages/EventNewPage";
 import EventEditPage from "./pages/EventEditPage";
 import AdminPage from "./pages/AdminPage";
+import AdminEventPhotosPage from "./pages/AdminEventPhotosPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 export default function App() {
@@ -41,6 +42,11 @@ export default function App() {
         <Route path="/admin" element={
           <ProtectedRoute minRole="admin">
             <AdminPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/events/:id/photos" element={
+          <ProtectedRoute minRole="admin">
+            <AdminEventPhotosPage />
           </ProtectedRoute>
         } />
         <Route path="*" element={<NotFoundPage />} />

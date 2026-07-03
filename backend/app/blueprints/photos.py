@@ -1,4 +1,4 @@
-"""사진 API: presigned 업로드 / 업로드 완료 / 배번호 검색 / 인식실패 목록 / 수동 태그."""
+"""사진 API: presigned 업로드 / 업로드 완료 / 배번호 검색 / 인식실패 목록 / 수동 태그 / 관리자 목록·삭제."""
 import json
 import uuid
 from datetime import datetime, timezone
@@ -211,6 +211,77 @@ def unrecognized(event_id):
             for p in photos
         ]
     }
+
+
+# ---------------------------------------------------------------- 관리자: 전체 사진 목록
+@photos_bp.get("/<event_id>/photos")
+@require_role("admin")
+def list_photos(event_id):
+    if _require_event(event_id) is None:
+        return error("이벤트를 찾을 수 없습니다.", 404)
+
+    page = max(request.args.get("page", 1, type=int) or 1, 1)
+    per_page = min(max(request.args.get("per_page", 50, type=int) or 50, 1), 100)
+
+    base = Photo.query.filter_by(event_id=event_id)
+    total = base.count()
+    photos = (
+        base.order_by(func.coalesce(Photo.shot_at, Photo.created_at).asc())
+        .offset((page - 1) * per_page)
+        .limit(per_page)
+        .all()
+    )
+    return {
+        "total": total,
+        "page": page,
+        "per_page": per_page,
+        "photos": [
+            {
+                **photo_schema.dump(p),
+                "bib_numbers": sorted({t.bib_number for t in p.bib_tags}),
+                "thumbnail_url": (
+                    storage.presigned_get_derived(p.thumbnail_key)
+                    if p.thumbnail_key
+                    else storage.presigned_get_raw(p.storage_key)
+                ),
+            }
+            for p in photos
+        ],
+    }
+
+
+# ---------------------------------------------------------------- 관리자: 사진 삭제
+@photos_bp.delete("/<event_id>/photos/<photo_id>")
+@require_role("admin")
+def delete_photo(event_id, photo_id):
+    photo = db.session.get(Photo, photo_id)
+    if photo is None or photo.event_id != event_id:
+        return error("사진을 찾을 수 없습니다.", 404)
+
+    # 커밋 후에는 ORM 객체 접근이 불가하므로 캐시 무효화/스토리지 정리용 값을 먼저 수집.
+    bib_numbers = {t.bib_number for t in photo.bib_tags}
+    storage_key = photo.storage_key
+    thumbnail_key = photo.thumbnail_key
+
+    db.session.delete(photo)  # photo_bib_tags는 FK CASCADE로 함께 삭제
+    db.session.commit()
+
+    # DB가 진실의 원천: 커밋 성공 후 스토리지 정리. 실패 시 고아 객체만 남음(허용).
+    try:
+        storage.delete_raw(storage_key)
+        if thumbnail_key:
+            storage.delete_derived(thumbnail_key)
+    except Exception:
+        current_app.logger.exception("MinIO 객체 삭제 실패 photo_id=%s", photo_id)
+
+    # 태그됐던 배번호의 검색 캐시 무효화(fail-open).
+    for bib in bib_numbers:
+        try:
+            redis_client.delete(f"search:{event_id}:{bib}")
+        except Exception:
+            pass
+
+    return {"message": "사진이 삭제되었습니다."}
 
 
 # ---------------------------------------------------------------- 수동 태그

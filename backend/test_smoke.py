@@ -102,6 +102,36 @@ with app.app_context():
     assert len(p.bib_tags) == 1 and p.bib_tags[0].bib_number == 1234
     assert p.bib_tags[0].source == "manual"
 
+# --- 관리자 사진 목록/삭제 ---
+r = client.post("/api/auth/signup", json={
+    "email": "admin@test.com", "password": "pass1234", "role": "admin"})
+assert r.status_code == 201, r.get_json()
+admin_token = r.get_json()["access_token"]
+
+# organizer가 목록 조회 → 403
+r = client.get(f"/api/events/{event_id}/photos", headers=auth_header(access))
+assert r.status_code == 403
+
+# admin 목록 조회 → BUG-01에서 만든 사진 1장 + 배번호 태그 포함
+r = client.get(f"/api/events/{event_id}/photos", headers=auth_header(admin_token))
+assert r.status_code == 200, r.get_json()
+body = r.get_json()
+assert body["total"] == 1 and body["page"] == 1
+assert body["photos"][0]["bib_numbers"] == [1234]
+assert body["photos"][0]["ocr_status"] == "done"
+
+# organizer가 삭제 시도 → 403
+r = client.delete(f"/api/events/{event_id}/photos/{photo_id}", headers=auth_header(access))
+assert r.status_code == 403
+
+# admin 삭제 → 200, row/태그 소멸, 재삭제는 404
+r = client.delete(f"/api/events/{event_id}/photos/{photo_id}", headers=auth_header(admin_token))
+assert r.status_code == 200, r.get_json()
+with app.app_context():
+    assert db.session.get(Photo, photo_id) is None
+r = client.delete(f"/api/events/{event_id}/photos/{photo_id}", headers=auth_header(admin_token))
+assert r.status_code == 404
+
 # --- logout → refresh 무효화 ---
 r = client.post("/api/auth/logout", headers=auth_header(access))
 assert r.status_code == 200

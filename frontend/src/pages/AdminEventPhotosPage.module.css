@@ -1,3 +1,15 @@
+.backLink {
+  display: inline-block;
+  margin-bottom: var(--rs-space-4);
+  color: var(--rs-text-muted);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--rs-text);
+}
+
 .section {
   margin-bottom: var(--rs-space-8);
 }
@@ -5,6 +17,12 @@
 .sectionTitle {
   font-size: 1.3rem;
   font-weight: 700;
+  margin: 0 0 var(--rs-space-2);
+}
+
+.summary {
+  color: var(--rs-text-muted);
+  font-size: 0.9rem;
   margin: 0 0 var(--rs-space-4);
 }
 
@@ -36,31 +54,12 @@
   border-bottom: none;
 }
 
-.roleSelect {
-  height: 36px;
-  padding: 0 var(--rs-space-3);
-  background: var(--rs-bg);
-  border: 1px solid var(--rs-border);
+.thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
   border-radius: var(--rs-radius-sm);
-  color: var(--rs-text);
-  font-size: 0.85rem;
-}
-
-.manageLink {
-  display: inline-flex;
-  align-items: center;
-  height: 32px;
-  padding: 0 var(--rs-space-3);
-  background: transparent;
-  border: 1px solid var(--rs-border);
-  color: var(--rs-text);
-  border-radius: var(--rs-radius-sm);
-  font-size: 0.8rem;
-  text-decoration: none;
-}
-
-.manageLink:hover {
-  background: var(--rs-bg);
+  display: block;
 }
 
 .deleteButton {
@@ -76,6 +75,35 @@
 
 .deleteButton:hover {
   background: rgba(255, 93, 93, 0.1);
+}
+
+.pagination {
+  display: flex;
+  gap: var(--rs-space-3);
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--rs-space-4);
+}
+
+.pageButton {
+  height: 36px;
+  padding: 0 var(--rs-space-4);
+  background: var(--rs-bg);
+  border: 1px solid var(--rs-border);
+  border-radius: var(--rs-radius-sm);
+  color: var(--rs-text);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.pageButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pageInfo {
+  color: var(--rs-text-muted);
+  font-size: 0.85rem;
 }
 
 .stateText,

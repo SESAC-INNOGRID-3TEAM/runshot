@@ -51,3 +51,13 @@ def presigned_get_derived(storage_key: str) -> str:
 def _presigned_get(bucket: str, storage_key: str) -> str:
     expiry = timedelta(seconds=current_app.config["PRESIGNED_GET_EXPIRY"])
     return _get_client().presigned_get_object(bucket, storage_key, expires=expiry)
+
+
+def delete_raw(storage_key: str) -> None:
+    """raw 버킷 객체 삭제. 없는 키면 no-op(S3 시맨틱). 네트워크 예외 처리는 호출부 담당."""
+    _get_client().remove_object(current_app.config["MINIO_BUCKET_RAW"], storage_key)
+
+
+def delete_derived(storage_key: str) -> None:
+    """derived(썸네일) 버킷 객체 삭제."""
+    _get_client().remove_object(current_app.config["MINIO_BUCKET_DERIVED"], storage_key)
