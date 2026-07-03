@@ -1,0 +1,9 @@
+# 실제 사람 얼굴이 담긴 로컬 테스트 사진 - 퍼블릭 이미지에 포함되면 안 됨
+tests/sample_photos/
+
+# 로컬 전용 파일
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.git/
