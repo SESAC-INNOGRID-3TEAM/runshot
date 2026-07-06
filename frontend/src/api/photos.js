@@ -30,6 +30,18 @@ export async function fetchUnrecognizedPhotos(eventId) {
   return res.data.photos;
 }
 
+export async function requeueOcr(eventId, photoId) {
+  if (USE_MOCK) {
+    await delay();
+    const list = MOCK_UNRECOGNIZED_BY_EVENT[Number(eventId)] ?? [];
+    const idx = list.findIndex((p) => p.id === photoId);
+    if (idx >= 0) list.splice(idx, 1);
+    return { photo_id: photoId, ocr_status: "pending" };
+  }
+  const res = await apiClient.post(`/events/${eventId}/photos/${photoId}/reprocess`);
+  return res.data;
+}
+
 export async function addManualTag(eventId, photoId, bibNumber) {
   if (USE_MOCK) {
     await delay();

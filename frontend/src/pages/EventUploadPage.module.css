@@ -319,6 +319,25 @@
   transform: translateY(-1px);
 }
 
+.requeueButton {
+  width: 100%;
+  height: 32px;
+  margin-top: var(--rs-space-2);
+  padding: 0;
+  background: transparent;
+  color: var(--rs-accent);
+  border: 1px solid var(--rs-accent);
+  border-radius: var(--rs-radius-sm);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform var(--rs-duration-fast) var(--rs-ease-out);
+}
+
+.requeueButton:hover {
+  transform: translateY(-1px);
+}
+
 .stateText {
   color: var(--rs-text-muted);
   padding: var(--rs-space-6);

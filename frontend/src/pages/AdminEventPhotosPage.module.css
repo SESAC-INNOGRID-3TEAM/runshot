@@ -62,6 +62,22 @@
   display: block;
 }
 
+.requeueButton {
+  height: 32px;
+  padding: 0 var(--rs-space-3);
+  margin-right: var(--rs-space-2);
+  background: transparent;
+  border: 1px solid var(--rs-accent);
+  color: var(--rs-accent);
+  border-radius: var(--rs-radius-sm);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.requeueButton:hover {
+  background: rgba(212, 255, 61, 0.1);
+}
+
 .deleteButton {
   height: 32px;
   padding: 0 var(--rs-space-3);

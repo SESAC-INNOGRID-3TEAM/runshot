@@ -154,6 +154,40 @@ assert body["total"] == 1 and body["page"] == 1
 assert body["photos"][0]["bib_numbers"] == [1234]
 assert body["photos"][0]["ocr_status"] == "done"
 
+# --- 재인식: done 사진 → 409 / 없는 사진 → 404 ---
+r = client.post(f"/api/events/{event_id}/photos/{photo_id}/reprocess", headers=auth_header(access))
+assert r.status_code == 409, r.get_json()
+r = client.post(f"/api/events/{event_id}/photos/nope/reprocess", headers=auth_header(access))
+assert r.status_code == 404
+
+# --- 재인식 happy path: publish 스텁 (스모크 환경엔 RabbitMQ 없음, pika 재시도 지연 회피) ---
+import app.blueprints.photos as photos_module
+
+with app.app_context():
+    p2 = Photo(event_id=event_id, uploader_id=uid,
+               storage_key="events/x/z.jpg", ocr_status="unrecognized")
+    db.session.add(p2)
+    db.session.commit()
+    photo2_id = p2.id
+
+_orig_publish = photos_module.publish_ocr_job
+photos_module.publish_ocr_job = lambda msg: None
+r = client.post(f"/api/events/{event_id}/photos/{photo2_id}/reprocess", headers=auth_header(access))
+assert r.status_code == 200 and r.get_json()["ocr_status"] == "pending", r.get_json()
+with app.app_context():
+    assert db.session.get(Photo, photo2_id).ocr_status == "pending"
+
+# --- 발행 실패 → 503 + 상태 불변 (pending도 재인식 허용 대상이라 같은 사진 재사용) ---
+def _fail_publish(msg):
+    raise RuntimeError("mq down")
+
+photos_module.publish_ocr_job = _fail_publish
+r = client.post(f"/api/events/{event_id}/photos/{photo2_id}/reprocess", headers=auth_header(access))
+assert r.status_code == 503
+with app.app_context():
+    assert db.session.get(Photo, photo2_id).ocr_status == "pending"
+photos_module.publish_ocr_job = _orig_publish
+
 # organizer가 삭제 시도 → 403
 r = client.delete(f"/api/events/{event_id}/photos/{photo_id}", headers=auth_header(access))
 assert r.status_code == 403

@@ -1,4 +1,4 @@
-"""사진 API: presigned 업로드 / 업로드 완료 / 배번호 검색 / 인식실패 목록 / 수동 태그 / 관리자 목록·삭제."""
+"""사진 API: presigned 업로드 / 업로드 완료 / 배번호 검색 / 인식실패 목록 / 수동 태그 / 재인식 / 관리자 목록·삭제."""
 import json
 import uuid
 from datetime import datetime, timezone
@@ -312,3 +312,33 @@ def add_manual_tag(event_id, photo_id):
         pass
 
     return {"photo_id": photo_id, "bib_number": bib, "ocr_status": "done"}, 201
+
+
+# ---------------------------------------------------------------- 재인식 요청
+@photos_bp.post("/<event_id>/photos/<photo_id>/reprocess")
+@require_role("photographer")
+def reprocess(event_id, photo_id):
+    photo = db.session.get(Photo, photo_id)
+    if photo is None or photo.event_id != event_id:
+        return error("사진을 찾을 수 없습니다.", 404)
+    if photo.ocr_status not in ("unrecognized", "pending"):
+        return error("이미 처리 중이거나 완료된 사진입니다.", 409)
+
+    # 발행 먼저: 실패 시 상태 변경 없이 503 (사용자가 명시 요청한 액션이므로 실패를 그대로 알림).
+    try:
+        publish_ocr_job(
+            {
+                "photo_id": photo.id,
+                "storage_key": photo.storage_key,
+                "event_id": event_id,
+                "retry_count": 1,
+                "enqueued_at": datetime.now(timezone.utc).isoformat(),
+            }
+        )
+    except Exception:
+        current_app.logger.exception("OCR 재처리 발행 실패 photo_id=%s", photo_id)
+        return error("재처리 요청에 실패했습니다.", 503)
+
+    photo.ocr_status = "pending"
+    db.session.commit()
+    return {"photo_id": photo_id, "ocr_status": "pending"}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { fetchEventPhotos, deletePhoto } from "../api/admin";
+import { requeueOcr } from "../api/photos";
 import { fetchEvent } from "../api/events";
 import PageContainer from "../components/common/PageContainer";
 import Spinner from "../components/common/Spinner";
@@ -80,6 +81,18 @@ export default function AdminEventPhotosPage() {
     }
   };
 
+  const handleRequeue = async (photoId) => {
+    try {
+      await requeueOcr(id, photoId);
+      setPhotos((current) =>
+        current.map((p) => (p.id === photoId ? { ...p, ocr_status: "pending" } : p))
+      );
+      toast.success("다시 인식을 요청했습니다.");
+    } catch (err) {
+      toast.error(err.response?.data?.error ?? "다시 인식 요청에 실패했습니다.");
+    }
+  };
+
   return (
     <PageContainer>
       <Link className={styles.backLink} to="/admin">
@@ -130,6 +143,14 @@ export default function AdminEventPhotosPage() {
                   <td>{STATUS_LABELS[photo.ocr_status] ?? photo.ocr_status}</td>
                   <td>{formatShotAt(photo.shot_at)}</td>
                   <td>
+                    {photo.ocr_status === "unrecognized" && (
+                      <button
+                        className={styles.requeueButton}
+                        onClick={() => handleRequeue(photo.id)}
+                      >
+                        다시 인식
+                      </button>
+                    )}
                     <button
                       className={styles.deleteButton}
                       onClick={() => handleDelete(photo.id)}
