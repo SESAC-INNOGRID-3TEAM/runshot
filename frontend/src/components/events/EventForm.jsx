@@ -12,8 +12,18 @@ export default function EventForm({ initialValues, submitLabel, submittingLabel,
   });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
+  // 커버 이미지: 선택한 파일과 미리보기 URL. 수정 모드에서는 기존 커버(cover_url)를 미리보기로.
+  const [coverFile, setCoverFile] = useState(null);
+  const [coverPreview, setCoverPreview] = useState(initialValues?.cover_url ?? null);
 
   const setField = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }));
+
+  const handleCoverChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setCoverFile(file);
+    setCoverPreview(URL.createObjectURL(file));
+  };
 
   const validate = () => {
     const next = {};
@@ -30,7 +40,7 @@ export default function EventForm({ initialValues, submitLabel, submittingLabel,
 
     setSubmitting(true);
     try {
-      await onSubmit(form);
+      await onSubmit({ ...form, coverFile });
     } finally {
       setSubmitting(false);
     }
@@ -66,6 +76,20 @@ export default function EventForm({ initialValues, submitLabel, submittingLabel,
         value={form.description}
         onChange={setField("description")}
       />
+      <FormField
+        label="커버 이미지 (선택)"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        onChange={handleCoverChange}
+      />
+      {coverPreview && (
+        <img
+          className={styles.coverPreview}
+          src={coverPreview}
+          alt="커버 미리보기"
+          onError={() => setCoverPreview(null)}
+        />
+      )}
       <Button type="submit" className={styles.submit} disabled={submitting}>
         {submitting ? submittingLabel : submitLabel}
       </Button>

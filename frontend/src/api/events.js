@@ -1,6 +1,6 @@
 import apiClient from "./client";
 import { USE_MOCK } from "./useMock";
-import { MOCK_EVENTS, MOCK_PHOTOS_BY_EVENT, MOCK_UNRECOGNIZED_BY_EVENT, delay } from "./mockData";
+import { MOCK_EVENTS, MOCK_PHOTOS_BY_EVENT, MOCK_UNRECOGNIZED_BY_EVENT, delay, mockImage } from "./mockData";
 
 export async function fetchEvents() {
   if (USE_MOCK) {
@@ -39,6 +39,19 @@ export async function createEvent(payload) {
     return newEvent;
   }
   const res = await apiClient.post("/events", payload);
+  return res.data;
+}
+
+export async function requestCoverPresigned(eventId, contentType) {
+  if (USE_MOCK) {
+    await delay();
+    const event = MOCK_EVENTS.find((e) => String(e.id) === String(eventId));
+    if (event) event.cover_url = mockImage("COVER", `cover-${eventId}`);
+    return { presigned_url: "mock://cover" };
+  }
+  const res = await apiClient.post(`/events/${eventId}/cover/presigned`, {
+    content_type: contentType,
+  });
   return res.data;
 }
 

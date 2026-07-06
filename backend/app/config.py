@@ -41,6 +41,7 @@ class Config:
     MINIO_REGION = os.getenv("MINIO_REGION", "us-east-1")
     MINIO_BUCKET_RAW = os.getenv("MINIO_BUCKET_RAW", "runshot-raw")
     MINIO_BUCKET_DERIVED = os.getenv("MINIO_BUCKET_DERIVED", "runshot-derived")
+    MINIO_BUCKET_COVERS = os.getenv("MINIO_BUCKET_COVERS", "runshot-covers")
     PRESIGNED_PUT_EXPIRY = _int("MINIO_PRESIGNED_EXPIRY", 900)  # 15분
     PRESIGNED_GET_EXPIRY = _int("MINIO_PRESIGNED_GET_EXPIRY", 3600)  # 1시간
 

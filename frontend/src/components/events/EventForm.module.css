@@ -2,3 +2,13 @@
   width: 100%;
   margin-top: var(--rs-space-2);
 }
+
+.coverPreview {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--rs-radius-md);
+  border: 1px solid var(--rs-border);
+  margin-bottom: var(--rs-space-4);
+}

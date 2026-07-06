@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { fetchEvent, updateEvent } from "../api/events";
+import { fetchEvent, updateEvent, requestCoverPresigned } from "../api/events";
+import { putToPresignedUrl } from "../api/uploads";
 import EventForm from "../components/events/EventForm";
 import Spinner from "../components/common/Spinner";
 import styles from "./EventNewPage.module.css";
@@ -25,8 +26,17 @@ export default function EventEditPage() {
   }, [id]);
 
   const handleSubmit = async (form) => {
+    const { coverFile, ...payload } = form;
     try {
-      await updateEvent(id, form);
+      await updateEvent(id, payload);
+      if (coverFile) {
+        try {
+          const { presigned_url } = await requestCoverPresigned(id, coverFile.type);
+          await putToPresignedUrl(presigned_url, coverFile, () => {});
+        } catch {
+          toast.error("커버 이미지 업로드에 실패했습니다.");
+        }
+      }
       toast.success("이벤트 정보가 수정되었습니다.");
       navigate(`/events/${id}`);
     } catch (err) {

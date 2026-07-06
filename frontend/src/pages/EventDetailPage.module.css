@@ -16,6 +16,16 @@
   color: var(--rs-accent);
 }
 
+.cover {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 1;
+  max-height: 280px;
+  object-fit: cover;
+  border-radius: var(--rs-radius-md);
+  margin-bottom: var(--rs-space-5);
+}
+
 .infoSection {
   padding-bottom: var(--rs-space-6);
   margin-bottom: var(--rs-space-6);

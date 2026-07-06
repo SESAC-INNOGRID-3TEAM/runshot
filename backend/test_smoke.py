@@ -77,6 +77,31 @@ assert r.status_code == 200 and len(r.get_json()["events"]) == 1
 r = client.get(f"/api/events/{event_id}")
 assert r.status_code == 200 and r.get_json()["summary"]["total"] == 0
 
+# --- 커버 presigned: 소유 organizer → 200 (presigned은 로컬 서명, MinIO 불필요) ---
+r = client.post(f"/api/events/{event_id}/cover/presigned", headers=auth_header(access),
+                json={"content_type": "image/jpeg"})
+assert r.status_code == 200 and "presigned_url" in r.get_json(), r.get_json()
+
+# --- 커버 presigned: 잘못된 content_type → 400 ---
+r = client.post(f"/api/events/{event_id}/cover/presigned", headers=auth_header(access),
+                json={"content_type": "image/gif"})
+assert r.status_code == 400
+
+# --- 커버 presigned: 타인 organizer → 403 ---
+r = client.post("/api/auth/signup", json={
+    "email": "org2@test.com", "password": "pass1234", "role": "organizer"})
+assert r.status_code == 201
+other_access = r.get_json()["access_token"]
+r = client.post(f"/api/events/{event_id}/cover/presigned", headers=auth_header(other_access),
+                json={"content_type": "image/jpeg"})
+assert r.status_code == 403
+
+# --- 목록/상세 응답에 cover_url 항상 포함 ---
+r = client.get("/api/events")
+assert all("cover_url" in e for e in r.get_json()["events"])
+r = client.get(f"/api/events/{event_id}")
+assert "cover_url" in r.get_json()
+
 # --- admin 전용 삭제를 organizer가 시도 → 403 ---
 r = client.delete(f"/api/events/{event_id}", headers=auth_header(access))
 assert r.status_code == 403
