@@ -27,6 +27,7 @@ def ensure_buckets():
     for bucket in (
         current_app.config["MINIO_BUCKET_RAW"],
         current_app.config["MINIO_BUCKET_DERIVED"],
+        current_app.config["MINIO_BUCKET_COVERS"],
     ):
         if not client.bucket_exists(bucket):
             client.make_bucket(bucket)
@@ -51,6 +52,18 @@ def presigned_get_derived(storage_key: str) -> str:
 def _presigned_get(bucket: str, storage_key: str) -> str:
     expiry = timedelta(seconds=current_app.config["PRESIGNED_GET_EXPIRY"])
     return _get_client().presigned_get_object(bucket, storage_key, expires=expiry)
+
+
+def presigned_put_cover(storage_key: str) -> str:
+    """이벤트 커버 업로드용 presigned PUT URL (covers 버킷)."""
+    expiry = timedelta(seconds=current_app.config["PRESIGNED_PUT_EXPIRY"])
+    return _get_client().presigned_put_object(
+        current_app.config["MINIO_BUCKET_COVERS"], storage_key, expires=expiry
+    )
+
+
+def presigned_get_cover(storage_key: str) -> str:
+    return _presigned_get(current_app.config["MINIO_BUCKET_COVERS"], storage_key)
 
 
 def delete_raw(storage_key: str) -> None:

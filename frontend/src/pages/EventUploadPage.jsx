@@ -4,7 +4,7 @@ import pLimit from "p-limit";
 import toast from "react-hot-toast";
 import { fetchEvent } from "../api/events";
 import { requestPresignedUploads, putToPresignedUrl, completeUploads } from "../api/uploads";
-import { fetchUnrecognizedPhotos, addManualTag } from "../api/photos";
+import { fetchUnrecognizedPhotos, addManualTag, requeueOcr } from "../api/photos";
 import { formatEventDate } from "../utils/formatDate";
 import { formatBytes } from "../utils/formatBytes";
 import Spinner from "../components/common/Spinner";
@@ -199,6 +199,17 @@ export default function EventUploadPage() {
     }
   };
 
+  const handleRequeue = async (photoId) => {
+    try {
+      await requeueOcr(id, photoId);
+      // pending 상태가 됐으니 미인식 목록에서 제거(처리 결과는 인식 현황 요약에 반영됨).
+      setUnrecognized((prev) => prev.filter((p) => p.id !== photoId));
+      toast.success("다시 인식을 요청했습니다.");
+    } catch (err) {
+      toast.error(err.response?.data?.error ?? "다시 인식 요청에 실패했습니다.");
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       {eventLoading ? (
@@ -353,6 +364,13 @@ export default function EventUploadPage() {
                     onClick={() => handleManualTagSubmit(photo.id)}
                   >
                     태그 추가
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.requeueButton}
+                    onClick={() => handleRequeue(photo.id)}
+                  >
+                    다시 인식
                   </button>
                 </div>
               </div>

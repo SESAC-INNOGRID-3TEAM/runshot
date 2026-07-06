@@ -14,6 +14,15 @@
   box-shadow: var(--rs-shadow-lift);
 }
 
+.cover {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--rs-radius-sm);
+  margin-bottom: var(--rs-space-4);
+}
+
 .name {
   margin: 0 0 var(--rs-space-2);
   font-size: 1.1rem;

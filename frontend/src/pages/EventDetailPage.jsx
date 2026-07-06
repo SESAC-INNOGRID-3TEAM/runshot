@@ -68,6 +68,17 @@ export default function EventDetailPage() {
         ← 이벤트 목록
       </Link>
 
+      {event.cover_url && (
+        <img
+          className={styles.cover}
+          src={event.cover_url}
+          alt=""
+          onError={(e) => {
+            e.currentTarget.style.display = "none";
+          }}
+        />
+      )}
+
       <section className={styles.infoSection}>
         <div className={styles.infoHead}>
           <div>

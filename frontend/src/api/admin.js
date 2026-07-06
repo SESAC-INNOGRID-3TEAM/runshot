@@ -35,15 +35,19 @@ export async function deleteEvent(eventId) {
 export async function fetchEventPhotos(eventId, page = 1, perPage = 50) {
   if (USE_MOCK) {
     await delay();
-    const all = (MOCK_PHOTOS_BY_EVENT[Number(eventId)] ?? []).map((p) => ({
-      id: p.id,
-      original_filename: `${p.id}.jpg`,
-      ocr_status: "done",
-      bib_numbers: [p.bib_number],
-      shot_at: p.shot_at,
-      file_size: 2400000,
-      thumbnail_url: p.thumbnail_url,
-    }));
+    // 5번째마다 미인식 처리 — 관리 화면의 '다시 인식' 버튼을 mock에서도 볼 수 있게.
+    const all = (MOCK_PHOTOS_BY_EVENT[Number(eventId)] ?? []).map((p, i) => {
+      const unrec = i % 5 === 4;
+      return {
+        id: p.id,
+        original_filename: `${p.id}.jpg`,
+        ocr_status: unrec ? "unrecognized" : "done",
+        bib_numbers: unrec ? [] : [p.bib_number],
+        shot_at: p.shot_at,
+        file_size: 2400000,
+        thumbnail_url: p.thumbnail_url,
+      };
+    });
     const start = (page - 1) * perPage;
     return {
       total: all.length,
