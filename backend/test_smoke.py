@@ -8,6 +8,7 @@ from app import create_app
 from app.config import Config
 from app.extensions import db
 from app.models import Photo, User
+from app.services.auth import hash_password
 
 
 class TestConfig(Config):
@@ -102,10 +103,18 @@ with app.app_context():
     assert len(p.bib_tags) == 1 and p.bib_tags[0].bib_number == 1234
     assert p.bib_tags[0].source == "manual"
 
-# --- 관리자 사진 목록/삭제 ---
+# --- 보안 가드: signup으로 admin 가입 불가 ---
 r = client.post("/api/auth/signup", json={
     "email": "admin@test.com", "password": "pass1234", "role": "admin"})
-assert r.status_code == 201, r.get_json()
+assert r.status_code == 403, r.get_json()
+
+# --- 관리자 사진 목록/삭제 (admin은 DB 직접 생성 — 운영에선 역할변경 API로 승격) ---
+with app.app_context():
+    db.session.add(User(email="admin@test.com",
+                        password_hash=hash_password("pass1234"), role="admin"))
+    db.session.commit()
+r = client.post("/api/auth/login", json={"email": "admin@test.com", "password": "pass1234"})
+assert r.status_code == 200, r.get_json()
 admin_token = r.get_json()["access_token"]
 
 # organizer가 목록 조회 → 403
