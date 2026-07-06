@@ -47,18 +47,26 @@ export default function EventEditPage() {
 
   if (loading) return <Spinner />;
   if (error || !event) {
-    return <p className={styles.wrapper}>이벤트를 불러오지 못했습니다.</p>;
+    return (
+      <div className={styles.wrapper}>
+        <p className={styles.card}>이벤트를 불러오지 못했습니다.</p>
+      </div>
+    );
   }
 
   return (
     <div className={styles.wrapper}>
-      <h1 className={styles.title}>이벤트 수정</h1>
-      <EventForm
-        initialValues={event}
-        submitLabel="수정 완료"
-        submittingLabel="수정 중..."
-        onSubmit={handleSubmit}
-      />
+      <div className={styles.card}>
+        <h1 className={styles.title}>이벤트 수정</h1>
+        <p className={styles.subtitle}>이벤트 정보를 수정합니다.</p>
+        <EventForm
+          initialValues={event}
+          submitLabel="수정 완료"
+          submittingLabel="수정 중..."
+          onSubmit={handleSubmit}
+          onCancel={() => navigate(`/events/${id}`)}
+        />
+      </div>
     </div>
   );
 }

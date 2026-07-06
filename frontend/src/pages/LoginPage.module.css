@@ -35,3 +35,32 @@
 .footerText a {
   color: var(--rs-accent);
 }
+
+.roleGroup {
+  display: flex;
+  gap: var(--rs-space-2);
+}
+
+.roleOption {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rs-space-2);
+  height: 44px;
+  padding: 0 var(--rs-space-2);
+  background: var(--rs-bg-card);
+  border: 1px solid var(--rs-border);
+  border-radius: var(--rs-radius-sm);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.roleOptionActive {
+  border-color: var(--rs-accent);
+  color: var(--rs-accent);
+}
+
+.roleRadio {
+  accent-color: var(--rs-accent);
+}

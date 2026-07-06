@@ -1,14 +1,114 @@
-.submit {
-  width: 100%;
-  margin-top: var(--rs-space-2);
+.dropzone {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 9;
+  margin-bottom: var(--rs-space-5);
+  background: var(--rs-bg-elevated);
+  border: 1px dashed var(--rs-border);
+  border-radius: var(--rs-radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color var(--rs-duration-fast) var(--rs-ease-out);
+}
+
+.dropzone:hover,
+.dropzone:focus-visible,
+.dropzoneActive {
+  border-color: var(--rs-accent);
+  outline: none;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.dropzonePlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--rs-space-2);
+  padding: var(--rs-space-4);
+  color: var(--rs-text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.dropzoneIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--rs-border);
+  border-radius: var(--rs-radius-pill);
+  font-size: 1.4rem;
+  color: var(--rs-text-muted);
+}
+
+.dropzoneHint {
+  font-size: 0.78rem;
+  color: var(--rs-text-blur);
 }
 
 .coverPreview {
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: 100%;
   object-fit: cover;
-  border-radius: var(--rs-radius-md);
-  border: 1px solid var(--rs-border);
-  margin-bottom: var(--rs-space-4);
+}
+
+.dropzoneOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 8, 0.55);
+  color: var(--rs-text);
+  font-size: 0.85rem;
+  opacity: 0;
+  transition: opacity var(--rs-duration-fast) var(--rs-ease-out);
+}
+
+.dropzone:hover .dropzoneOverlay,
+.dropzone:focus-visible .dropzoneOverlay {
+  opacity: 1;
+}
+
+.removeCover {
+  position: absolute;
+  top: var(--rs-space-2);
+  right: var(--rs-space-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--rs-radius-pill);
+  background: rgba(10, 10, 8, 0.7);
+  color: var(--rs-text);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.removeCover:hover {
+  background: var(--rs-danger);
+}
+
+.actions {
+  display: flex;
+  gap: var(--rs-space-3);
+  margin-top: var(--rs-space-2);
+}
+
+.cancel {
+  flex: 1;
+}
+
+.submit {
+  flex: 1;
 }

@@ -31,8 +31,16 @@ export default function EventNewPage() {
 
   return (
     <div className={styles.wrapper}>
-      <h1 className={styles.title}>이벤트 생성</h1>
-      <EventForm submitLabel="이벤트 생성" submittingLabel="생성 중..." onSubmit={handleSubmit} />
+      <div className={styles.card}>
+        <h1 className={styles.title}>이벤트 생성</h1>
+        <p className={styles.subtitle}>대회 정보를 입력하고 참가자들이 찾을 이벤트를 만들어보세요.</p>
+        <EventForm
+          submitLabel="이벤트 생성"
+          submittingLabel="생성 중..."
+          onSubmit={handleSubmit}
+          onCancel={() => navigate("/events")}
+        />
+      </div>
     </div>
   );
 }

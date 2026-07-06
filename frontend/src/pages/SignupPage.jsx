@@ -4,16 +4,25 @@ import toast from "react-hot-toast";
 import { signup } from "../api/auth";
 import FormField from "../components/common/FormField";
 import Button from "../components/common/Button";
+import fieldStyles from "../components/common/FormField.module.css";
 import styles from "./LoginPage.module.css";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_RE = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
+
+// admin은 자가 가입 불가(백엔드에서도 차단) — 가입 시 선택 가능한 역할만 나열.
+const ROLE_OPTIONS = [
+  { value: "participant", label: "참가자" },
+  { value: "photographer", label: "사진작가" },
+  { value: "organizer", label: "주최자" },
+];
 
 export default function SignupPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [role, setRole] = useState("participant");
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -38,7 +47,7 @@ export default function SignupPage() {
 
     setSubmitting(true);
     try {
-      await signup(email.trim(), password);
+      await signup(email.trim(), password, role);
       toast.success("회원가입이 완료되었습니다. 로그인해주세요.");
       navigate("/login");
     } catch (err) {
@@ -81,6 +90,29 @@ export default function SignupPage() {
             error={errors.passwordConfirm}
             autoComplete="new-password"
           />
+          <div className={fieldStyles.field}>
+            <label className={fieldStyles.label}>가입 유형</label>
+            <div className={styles.roleGroup}>
+              {ROLE_OPTIONS.map((opt) => (
+                <label
+                  key={opt.value}
+                  className={`${styles.roleOption} ${
+                    role === opt.value ? styles.roleOptionActive : ""
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="role"
+                    value={opt.value}
+                    checked={role === opt.value}
+                    onChange={() => setRole(opt.value)}
+                    className={styles.roleRadio}
+                  />
+                  {opt.label}
+                </label>
+              ))}
+            </div>
+          </div>
           <Button type="submit" className={styles.submit} disabled={submitting}>
             {submitting ? "가입 중..." : "회원가입"}
           </Button>

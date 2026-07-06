@@ -1,16 +1,28 @@
 .wrapper {
-  max-width: 560px;
-  margin: 0 auto;
-  padding: var(--rs-space-7) var(--rs-space-6);
+  display: flex;
+  justify-content: center;
+  padding: var(--rs-space-8) var(--rs-space-6);
+}
+
+.card {
+  width: 100%;
+  max-width: 640px;
+  padding: var(--rs-space-6);
+  background: var(--rs-bg-card);
+  border: 1px solid var(--rs-border);
+  border-radius: var(--rs-radius-md);
 }
 
 .title {
-  margin: 0 0 var(--rs-space-6);
-  font-size: 1.6rem;
+  margin: 0 0 var(--rs-space-2);
+  font-size: 1.4rem;
   font-weight: 800;
+  text-align: center;
 }
 
-.submit {
-  width: 100%;
-  margin-top: var(--rs-space-2);
+.subtitle {
+  margin: 0 0 var(--rs-space-6);
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--rs-text-muted);
 }

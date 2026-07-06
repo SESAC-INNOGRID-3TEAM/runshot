@@ -26,11 +26,11 @@ export async function login(email, password) {
   return res.data;
 }
 
-export async function signup(email, password) {
+export async function signup(email, password, role = "participant") {
   if (USE_MOCK) {
     await delay();
-    return { id: 999, email, role: "participant" };
+    return { id: 999, email, role };
   }
-  const res = await apiClient.post("/auth/signup", { email, password });
+  const res = await apiClient.post("/auth/signup", { email, password, role });
   return res.data;
 }
