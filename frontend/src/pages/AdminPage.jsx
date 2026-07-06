@@ -10,6 +10,14 @@ import styles from "./AdminPage.module.css";
 
 const ROLES = ["participant", "photographer", "organizer", "admin"];
 
+// 화면 표시용 라벨. 서버/DB는 영어 role 값을 그대로 사용하므로 value는 바꾸지 않는다.
+const ROLE_LABELS = {
+  participant: "참가자",
+  photographer: "사진작가",
+  organizer: "주최자",
+  admin: "관리자",
+};
+
 export default function AdminPage() {
   const [users, setUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(true);
@@ -87,7 +95,7 @@ export default function AdminPage() {
                     >
                       {ROLES.map((role) => (
                         <option key={role} value={role}>
-                          {role}
+                          {ROLE_LABELS[role]}
                         </option>
                       ))}
                     </select>
