@@ -30,7 +30,8 @@ def signup():
     data = request.get_json(silent=True) or {}
     email = (data.get("email") or "").strip().lower()
     password = data.get("password") or ""
-    # ponytail: 데모 편의상 signup에서 role 지정 허용(기본 participant). 운영에선 admin만 승격.
+    # 데모 편의상 signup에서 role 지정 허용(기본 participant).
+    # 단 admin은 자가 가입 불가 — 기존 admin이 역할변경 API로만 승격(권한 탈취 방지).
     role = data.get("role") or "participant"
 
     if not EMAIL_RE.match(email):
@@ -39,6 +40,8 @@ def signup():
         return error("비밀번호는 8자 이상이며 영문자와 숫자를 포함해야 합니다.")
     if role not in ROLES:
         return error("유효하지 않은 역할입니다.")
+    if role == "admin":
+        return error("admin 역할로는 가입할 수 없습니다.", 403)
     if User.query.filter_by(email=email).first():
         return error("이미 가입된 이메일입니다.", 409)
 
