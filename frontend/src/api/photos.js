@@ -9,14 +9,16 @@ export async function searchPhotos(eventId, bib) {
     return photos.filter((p) => String(p.bib_number) === String(bib));
   }
   const res = await apiClient.get(`/events/${eventId}/photos/search`, { params: { bib } });
-  // 백엔드: { bib_number, total, photos:[{photo_id, thumbnail_url, original_url, shot_at, confidence}] }
-  // → 컴포넌트가 쓰는 { id, thumbnail_url, image_url, shot_at } 형태로 매핑
+  // 백엔드: { bib_number, total, photos:[{photo_id, thumbnail_url, original_url, download_url, shot_at, confidence}] }
+  // → 컴포넌트가 쓰는 형태로 매핑. download_url(다운로드 강제)·original_url(원본 보기)도 반드시 전달.
   return res.data.photos.map((p) => ({
     id: p.photo_id,
     bib_number: res.data.bib_number,
     shot_at: p.shot_at,
     thumbnail_url: p.thumbnail_url,
+    original_url: p.original_url,
     image_url: p.original_url,
+    download_url: p.download_url,
     confidence: p.confidence,
   }));
 }
