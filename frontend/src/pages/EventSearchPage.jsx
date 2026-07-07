@@ -51,7 +51,7 @@ export default function EventSearchPage() {
     sortedPhotos.forEach((photo, i) => {
       setTimeout(() => {
         const link = document.createElement("a");
-        link.href = photo.image_url ?? photo.thumbnail_url;
+        link.href = photo.download_url ?? photo.original_url ?? photo.thumbnail_url;
         link.download = "";
         document.body.appendChild(link);
         link.click();

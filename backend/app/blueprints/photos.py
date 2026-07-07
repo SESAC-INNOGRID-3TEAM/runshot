@@ -129,6 +129,10 @@ def search(event_id):
                 else storage.presigned_get_raw(r["storage_key"])
             ),
             "original_url": storage.presigned_get_raw(r["storage_key"]),
+            "download_url": storage.presigned_get_raw_download(
+                r["storage_key"],
+                f"runshot_{bib}_{r['photo_id'][:8]}.{r['storage_key'].rsplit('.', 1)[-1]}",
+            ),
             "shot_at": r["shot_at"],
             "confidence": r["confidence"],
         }

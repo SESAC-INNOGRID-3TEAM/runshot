@@ -49,9 +49,28 @@ def presigned_get_derived(storage_key: str) -> str:
     return _presigned_get(current_app.config["MINIO_BUCKET_DERIVED"], storage_key)
 
 
-def _presigned_get(bucket: str, storage_key: str) -> str:
+def presigned_get_raw_download(storage_key: str, filename: str = None) -> str:
+    """다운로드 강제용 presigned GET URL (raw 버킷).
+
+    response-content-disposition=attachment 헤더를 서명에 포함시켜, MinIO가 다른 origin이어도
+    브라우저가 인라인으로 열지 않고 파일로 저장하게 한다(cross-origin에서 <a download> 속성이
+    무시되는 문제 우회). filename을 주면 저장 파일명으로 사용.
+    """
+    disposition = "attachment"
+    if filename:
+        disposition = f'attachment; filename="{filename}"'
+    return _presigned_get(
+        current_app.config["MINIO_BUCKET_RAW"],
+        storage_key,
+        response_headers={"response-content-disposition": disposition},
+    )
+
+
+def _presigned_get(bucket: str, storage_key: str, response_headers: dict = None) -> str:
     expiry = timedelta(seconds=current_app.config["PRESIGNED_GET_EXPIRY"])
-    return _get_client().presigned_get_object(bucket, storage_key, expires=expiry)
+    return _get_client().presigned_get_object(
+        bucket, storage_key, expires=expiry, response_headers=response_headers
+    )
 
 
 def presigned_put_cover(storage_key: str) -> str:

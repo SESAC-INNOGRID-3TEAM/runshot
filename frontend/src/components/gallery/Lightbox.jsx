@@ -34,14 +34,14 @@ export default function Lightbox({ photos, index, onClose, onPrev, onNext }) {
       </button>
 
       <div className={styles.imageWrap} onClick={(e) => e.stopPropagation()}>
-        <img className={styles.image} src={photo.image_url ?? photo.thumbnail_url} alt="확대 보기" />
+        <img className={styles.image} src={photo.original_url ?? photo.thumbnail_url} alt="확대 보기" />
         <div className={styles.footer}>
           <span>
             {index + 1} / {photos.length}
           </span>
           <a
             className={styles.downloadButton}
-            href={photo.image_url ?? photo.thumbnail_url}
+            href={photo.download_url ?? photo.original_url ?? photo.thumbnail_url}
             download
           >
             다운로드
